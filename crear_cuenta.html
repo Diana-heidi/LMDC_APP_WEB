@@ -220,10 +220,10 @@
 
                 <div class="fila">
                     <div class="campo">
-                        <input type="text" name="nombre" placeholder="Nombre" required>
+                        <input type="text" name="nombre" placeholder="Nombre">
                     </div>
                     <div class="campo">
-                        <input type="text" name="apellidoPaterno" placeholder="Apellido paterno" required>
+                        <input type="text" name="apellidoPaterno" placeholder="Apellido paterno">
                     </div>
                     <div class="campo">
                         <input type="text" name="apellidoMaterno" placeholder="Apellido materno">
@@ -232,19 +232,19 @@
 
                 <div class="fila">
                     <div class="campo">
-                        <input type="tel" name="telefono" placeholder="Teléfono" required minlength="10">
+                        <input type="tel" name="telefono" placeholder="Teléfono" minlength="10">
                     </div>
                     <div class="campo">
-                        <input type="text" name="codigoPostal" placeholder="Código postal" required>
+                        <input type="text" name="codigoPostal" placeholder="Código postal">
                     </div>
                 </div>
 
                 <div class="fila">
                     <div class="campo" style="flex: 2;">
-                        <input type="text" name="calle" placeholder="Calle" required>
+                        <input type="text" name="calle" placeholder="Calle">
                     </div>
                     <div class="campo">
-                        <input type="text" name="numeroExterior" placeholder="N° Ext" required>
+                        <input type="text" name="numeroExterior" placeholder="N° Ext">
                     </div>
                     <div class="campo">
                         <input type="text" name="numeroInterior" placeholder="N° Int">
@@ -253,17 +253,16 @@
 
                 <div class="fila">
                     <div class="campo">
-                        <input type="email" name="correo" placeholder="Correo electrónico" required>
+                        <input type="email" name="correo" placeholder="Correo electrónico">
                     </div>
                 </div>
 
                 <div class="fila">
                     <div class="campo">
-                        <input type="password" name="contrasena" placeholder="Contraseña" minlength="8" required>
+                        <input type="password" name="contrasena" placeholder="Contraseña">
                     </div>
                     <div class="campo">
-                        <input type="password" name="confirmarContrasena" placeholder="Confirmar contraseña"
-                            minlength="8" required>
+                        <input type="password" name="confirmarContrasena" placeholder="Confirmar contraseña">
                     </div>
                 </div>
 
@@ -297,25 +296,40 @@
         </div>
     </footer>
     <script type="module">
-        import { consume } from "/api/js/lib/consume.js"
-        import { enviaFormRecibeJson } from "/api/js/lib/enviaFormRecibeJson.js"
-        import { muestraError } from "/api/js/lib/muestraError.js";
+    import { consume } from "/api/js/lib/consume.js"
+    import { enviaFormRecibeJson } from "/api/js/lib/enviaFormRecibeJson.js"
+    import { muestraError } from "/api/js/lib/muestraError.js";
 
-        form_crear_cuenta.addEventListener("submit", submit)
-        async function submit(event) {
-            try{
-                event.preventDefault()
-                const respuesta=await consume(
-                    enviaFormRecibeJson("api/php/procesaCrearCuenta.php",form_crear_cuenta)
-                )
-                const json = await respuesta.json()
-                alert(json)
-            }catch(error){
-                muestraError(error)
+    // El navegador identifica automáticamente el ID del formulario
+    form_crear_cuenta.addEventListener("submit", submit)
+
+    async function submit(event) {
+        try {
+            event.preventDefault()
+
+            // Asegúrate de que la ruta coincida con tu estructura de carpetas
+            const respuesta = await consume(
+                enviaFormRecibeJson("api/php/procesaCrearCuenta.php", form_crear_cuenta)
+            )
+
+            const json = await respuesta.json()
+
+            // Validamos si el registro fue exitoso según el objeto devuelto por registrarUsuario.php
+            if (json.exito === true) {
+                alert(json.mensaje)
+                // Redirección inmediata al login
+                window.location.href = "iniciar_sesion.html"
+            } else {
+                // Si json no es un objeto con 'exito' (es un string de error), lo mostramos
+                alert(typeof json === 'string' ? json : "Error en el registro");
             }
-            
+
+        } catch (error) {
+            // Maneja errores de red o errores lanzados por consume()
+            muestraError(error)
         }
-    </script>
+    }
+</script>
 </body>
 
 </html>
