@@ -1,3 +1,4 @@
+document.addEventListener("DOMContentLoaded", function(){
 const barriles = document.querySelectorAll(".barril");
 const modal = document.getElementById("modalBarril");
 
@@ -102,3 +103,4 @@ if(e.target==modal){
 modal.style.display="none";
 }
 }
+});
